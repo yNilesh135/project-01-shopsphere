@@ -67,9 +67,9 @@ EC2                 EC2
                   Jenkins
                     |
             +--+----------------+
-         |  |       |        |
-         Test Build Security  Docker
-         |  |       |        |
+            |  |       |        |
+          git Test Build Security  Docker
+             |  |       |        |
             +--+-------+--------+
                     |
                 Deployment
