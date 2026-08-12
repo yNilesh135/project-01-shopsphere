@@ -42,21 +42,21 @@ monitoring, and performance practices.
 ## High-Level Architecture
 
 ```text
-        Users
-          |
-      Route 53
-          |
+         Users
+           |
+       Route 53
+           |
 Application Load Balancer
-          |
-+-------------------+
-|                   |
-EC2                 EC2
-|                   |
-+---------+---------+
-          |
-         RDS
-          |
-         S3
+           |
+ +-------------------+
+ |                   |
+ EC2                 EC2
+ |                   |
+ +---------+---------+
+           |
+          RDS
+           |
+           S3
 
     CI/CD Architecture
 
