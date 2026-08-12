@@ -58,24 +58,24 @@ EC2                 EC2
           |
          S3
 
-         CI/CD Architecture
+    CI/CD Architecture
 
-                Developer
-                    |
-                  GitHub
-                    |
-                  Jenkins
-                    |
-            +--+----------------+
-            |  |       |        |
-          git Test Build Security  Docker
-             |  |       |        |
-            +--+-------+--------+
-                    |
-                Deployment
-                    |
-                   AWS
+        Developer
+            |
+          GitHub
+            |
+          Jenkins
+            |
++----+-------+--------+-----+
+|    |       |        |     |
+git Test Build Security  Docker
+|    |       |        |     |
++----+-------+--------+-----+
+             |
+         Deployment
+             |
+            AWS
 
-                   Project Status
+      Project Status
 
                    
