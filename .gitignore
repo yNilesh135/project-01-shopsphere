@@ -1,0 +1,28 @@
+# Environment variables
+.env
+.env.*
+
+# AWS credentials
+.aws/
+*.pem
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code local settings
+.vscode/
