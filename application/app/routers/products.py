@@ -1,10 +1,14 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from application.app.database import get_db
+from fastapi import APIRouter, Depends, HTTPException
 
+from sqlalchemy import select
 
-class ProductCreate(BaseModel):
-    name: str
-    price: float
+from application.app.schemas import ProductCreate, ProductResponse, ProductUpdate
+
+from application.app.models import Product
+
 
 
 router = APIRouter(
@@ -19,28 +23,60 @@ products = [
 ]
 
 
-@router.get("/")
-def get_products():
-    return products
+@router.get("/", response_model=list[ProductResponse])
+def get_products(db: Session = Depends(get_db)):
+    result = db.scalars(select(Product))
+    return result.all()
 
 
-@router.get("/{product_id}")
-def get_product(product_id: int):
-    for product in products:
-        if product["id"] == product_id:
-            return product
+@router.get("/{product_id}", response_model=ProductResponse)
+def get_product(product_id: int, db: Session = Depends(get_db)):
+    product = db.get(Product, product_id)
 
-    raise HTTPException(status_code=404, detail="Product not found")
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    return product
 
 
-@router.post("/", status_code=201)
-def create_product(product: ProductCreate):
-    new_product = {
-        "id": len(products) + 1,
-        "name": product.name,
-        "price": product.price
-    }
+@router.post("/", response_model=ProductResponse, status_code=201)
+def create_product(product: ProductCreate, db: Session = Depends(get_db)):
+    new_product = Product(
+        name=product.name,
+        price=product.price
+    )
 
-    products.append(new_product)
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
 
     return new_product
+
+@router.put("/{product_id}", response_model=ProductResponse)
+def update_product(
+    product_id: int,
+    product_update: ProductUpdate,
+    db: Session = Depends(get_db),
+):
+    product = db.get(Product, product_id)
+
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    product.name = product_update.name
+    product.price = product_update.price
+
+    db.commit()
+    db.refresh(product)
+
+    return product
+
+@router.delete("/{product_id}", status_code=204)
+def delete_product(product_id: int, db: Session = Depends(get_db)):
+    product = db.get(Product, product_id)
+
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    db.delete(product)
+    db.commit()
